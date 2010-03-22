@@ -38,7 +38,6 @@ import java.util.Iterator;
  *                  con los gestores de las nuevas excepciones utilizadas.
  */
 public class ConsultorOrtografico {
-    
     // METODOS AUXILIARES:
     /* Pequenos metodos que se encargan de implementar opciones del menu de 
      * especial dimension y/o complejidad. No tienen especificacion en JML 
@@ -261,21 +260,52 @@ public class ConsultorOrtografico {
      * @param c de tipo ConsultOrt. El Consultor Ortografico cuyo vocabulario se
      *                              va a listar.
      */
-    public static void listarVoc (ConsultOrt c,boolean variante){
-        if (variante) {
-            Iterator e = c.elems();
-            if (e.hasNext()) {
-                System.out.println("\nEl vocabulario de este Consultor Ortografico contiene las palabras:\n");
-                while (e.hasNext()) {
-                    System.out.println(e.next());
-                }
-                System.out.println("\nFin del vocabulario...");
-            } else {
-                System.out.println("\nEl vocabulario esta vacio...");
+    public static void listarVoc (ConsultOrt c){
+        Iterator e = c.elems();
+        if (e.hasNext()) {
+            System.out.println("\nEl vocabulario de este Consultor Ortografico contiene las palabras:\n");
+            while (e.hasNext()) {
+                System.out.println(e.next());
             }
+            System.out.println("\nFin del vocabulario...");
         } else {
-            System.out.println("\n      Lo Sentimos!!!!\nEl iterador para esta variante no esta implementado...\n");
+            System.out.println("\nEl vocabulario esta vacio...");
         }
+    }
+    
+    public static void mensajeDeBienvenida () {
+        System.out.println("\nBienvenido al programa de prueba del tipo:\n");
+        System.out.println("           \"Consultor Ortografico\"");
+        System.out.println("                 (ConsultOrt)");
+        System.out.println("\nEste tipo abstracto ha sido desarrollado por:\n\n");
+        System.out.println("    *Victor Manuel De Ponte Olivares        Carnet 05-38087");
+        System.out.println("    *Jose Carlos Zabala                     Carnet 05-39070");
+        System.out.println("\n\nBasado en codigo fuente escrito por el profesor Diego Mosquera");
+        System.out.println("\nVersion de prueba 0.2");
+    }
+    
+    public static void mensajeDeDespedida () {
+        System.out.println("\nGracias por probar el tipo \"Consultor Ortografico\"....");
+        System.out.println("\nEste tipo abstracto ha sido desarrollado por:\n\n");
+        System.out.println("    *Victor Manuel De Ponte Olivares        Carnet 05-38087");
+        System.out.println("    *Jose Carlos Zabala                     Carnet 05-39070");
+        System.out.println("\n\nBasado en codigo fuente escrito por el profesor Diego Mosquera");
+        System.out.println("\nVersion de prueba 0.2");
+        System.out.println("\nHasta Luego!!!....\n\n");
+    }
+    
+    public static void historialDeVersiones () {
+        System.out.println("\nHistorial de versiones:\n");
+        System.out.println("0.1  -  01/03/2010");
+        System.out.println("        PRIMER AVANCE... estan implementadas nada mas las 4 primeras");
+        System.out.println("        opciones, correspondientes a la variante del tipo implemen-");
+        System.out.println("        tada con arreglos. Maneja eficientemente las excepciones lan-");
+        System.out.println("        zadas por las operaciones.\n");
+        System.out.println("0.2  -  11/03/2010");
+        System.out.println("        SEGUNDO AVANCE... implementadas todas las opciones para la va-");
+        System.out.println("        riante implementada con arreglos. Usando la variante con tries,");
+        System.out.println("        solo estan activas las opciones 1,2 y 3. Tambien se implementa-");
+        System.out.println("        ron los gestores de las nuevas excepciones utilizadas.");
     }
     
     // GESTORES DE EXCEPCIONES:
@@ -404,45 +434,20 @@ public class ConsultorOrtografico {
     // FIN DE LOS METODOS AUXILIARES...
     
     public static void main (String[] args) {
-        
-        /* @Historial_de_Versiones:
- * 
- * @version 0.1  -  01/03/2010
- *                  PRIMER AVANCE... estan implementadas nada mas las 4 primeras
- *                  opciones, correspondientes a la variante del tipo implemen-
- *                  tada con arreglos. Maneja eficientemente las excepciones 
- *                  lanzadas por las operaciones.
- *                  
- * @version 0.2  -  11/03/2010
- *                  SEGUNDO AVANCE... implementadas todas las opciones, junto 
- *                  con los gestores de las nuevas excepciones utilizadas.
- */
-        System.out.println("\nBienvenido al programa de prueba del tipo:\n");
-        System.out.println("           \"Consultor Ortografico\"");
-        System.out.println("                 (ConsultOrt)");
-        System.out.println("\nEste tipo abstracto ha sido desarrollado por:\n\n");
-        System.out.println("    *Victor Manuel De Ponte Olivares        Carnet 05-38087");
-        System.out.println("    *Jose Carlos Zabala                     Carnet 05-39070");
-        System.out.println("\n\nBasado en codigo fuente escrito por el profesor Diego Mosquera");
-        System.out.println("\nVersion de prueba 0.1");
-        System.out.println("\nHistorial de versiones:\n");
-        System.out.println("0.1  -  01/03/2010");
-        System.out.println("        PRIMER AVANCE... estan implementadas nada mas las 4 primeras");
-        System.out.println("        opciones, correspondientes a la variante del tipo implemen-");
-        System.out.println("        tada con arreglos. Maneja eficientemente las excepciones lan-");
-        System.out.println("        zadas por las operaciones.\n");
-        System.out.println("0.2  -  11/03/2010");
-        System.out.println("        SEGUNDO AVANCE... implementadas todas las opciones para la va-");
-        System.out.println("        riante implementada con arreglos. Usando la variante con tries,");
-        System.out.println("        solo estan activas las opciones 1,2 y 3. Tambien se implementa-");
-        System.out.println("        ron los gestores de las nuevas excepciones utilizadas.");
+        mensajeDeBienvenida();
         int opc=0;
         ConsultOrt c = new ConsultOrtArreglos();
         boolean creado = false;
         boolean variante = true; // true si se usa arreglos, false si se usa tries
         boolean volver = false;
+        String l = "";
         do {
-            String l = "";
+            l = Console.readString("\nDesea ver el historial de versiones?? (s/n)\n\n >> ");
+        } while (!(l.equalsIgnoreCase("s") || l.equalsIgnoreCase("n")));
+        if (l.equalsIgnoreCase("s")) {
+            historialDeVersiones();
+        }
+        do {
             System.out.println("\n\nMENU:\n\n");
             System.out.println("1) Crear un nuevo Consultor Ortografico vacio");
             System.out.println("2) Agregar palabras al vocabulario del consultor");
@@ -467,13 +472,16 @@ public class ConsultorOrtografico {
                         c = new ConsultOrtTriesArreglos();
                         creado = true;
                         variante = false;
-                        //System.out.println("\n              LO SENTIMOS!!!\nVariante no implementada todavia...");
                     } else if (v == 3) {
                         volver = true;
-                        System.out.println("volviendo...");
+                        System.out.println("\nvolviendo...");
                     }
                 } while (!creado && !volver);
-                System.out.println("\nConsultor Ortografico vacio creado con exito...");
+                if (creado) {
+                    System.out.println("\nConsultor Ortografico vacio creado con exito...");
+                } else {
+                    System.out.println("\nEl Consultor Ortografico vacio no fue creado con exito...");
+                }
             } else if (opc == 2) {
                 if (creado) {
                     int n;
@@ -543,18 +551,12 @@ public class ConsultorOrtografico {
                 }
             } else if (opc == 6) {
                 if (creado) {
-                    listarVoc(c,variante);
+                    listarVoc(c);
                 } else {
                     System.out.println("\nNo se ha creado un nuevo Consultor Ortografico, no es posible realizar la operacion...");
                 }
             } else if (opc == 7) {
-                System.out.println("\nGracias por probar el tipo \"Consultor Ortografico\"....");
-                System.out.println("\nEste tipo abstracto ha sido desarrollado por:\n\n");
-                System.out.println("    *Victor Manuel De Ponte Olivares        Carnet 05-38087");
-                System.out.println("    *Jose Carlos Zabala                     Carnet 05-39070");
-                System.out.println("\n\nBasado en codigo fuente escrito por el profesor Diego Mosquera");
-                System.out.println("\nVersion de prueba 0.1");
-                System.out.println("\nHasta Luego!!!....\n\n");
+                mensajeDeDespedida();
                 opc = 0;
             } else {
                 System.out.println("\nUd. introdujo una opcion incorrecta....");

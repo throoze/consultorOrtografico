@@ -1,5 +1,6 @@
 import java.util.Iterator;
 //@ model import org.jmlspecs.models.*;
+import java.util.NoSuchElementException;
 public class ConsultOrtTriesArreglos implements ConsultOrt {
     final static int TAMALFA = 26;
     private /*@ spec_public @*/ Nodo vt;
@@ -234,7 +235,6 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
         public /*@ pure @*/ int countWords () {
             int n = 0;
             if (this != null) {
-                System.out.println("no es nulo, entro...");
                 /*@ loop_invariant 0 <= k && k <= 26 &&
                   @    n == (\sum int i;
                   @                 0 <= i && i < k;
@@ -244,11 +244,9 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
                   @*/
                 for (int k = 0; k < 26; k++) {
                     if (this.at[k] != null) {
-                        System.out.println("veo el hijo n: " + k);
                         n = n + this.at[k].countWords();
                     }
                 }
-                System.out.println("si es palabra, le subo uno mas");
                 return (n + (this.esPalabra ? 1 : 0));
             } else {
                 return 0;
@@ -275,36 +273,77 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
             }
             return words;
         }
-        /*
-        public String nts (String s, String pr, int i){
-            String l = pr;
-            for (int k =0; k < 26; k++){
-                if (this.at[k] != null) {
-                    l = l + (char)(i + 'a');
-                    this.at[k].nts(s,l,i);
-                }
-            }
-            if (this.esPalabra) {
-                s = s + l + " ";
-            }
-            return l;
-        }
-        
-        public void nts (String p) {
-            if (!this.isEmpty()) {
-                Nodo t = this;
-                for (int k = 0; k < 26; k++) {
-                    
-                    if (!t.at[k].isEmpty()) {
-                        p = p +(t.at[k].esPalabra ?  "":"");
-                        t = t.at[k];
-                    } 
-                }
-            }
-        }
-        */
     }
 
+    private static class elGenTries implements Iterator {
+        
+        private /*@ spec_public @*/ String[] seq;
+        private /*@ spec_public @*/ int index;
+        
+        //@ public represents moreElements <- this.hasNext();
+        // set returnsNull = false;
+        
+        /*@ requires true;
+          @ ensures this.seq.length == t;
+          @ ensures (\forall int i; 
+          @                 0 <= i && i < this.seq.length;
+          @                         this.seq[i].equals(s[i])
+          @         );
+          @ ensures this.index == 0;
+          @*/
+        public elGenTries (Nodo n) {
+            this.seq = n.extractWordsA();
+            //this.seq = new String[tmp.length];
+            /*
+            for (int k = 0; k < tmp.length; k++) {
+                this.seq[k] = tmp[k];
+            }
+             */
+            this.index = 0;
+        }
+        
+        /*@ also
+          @ requires true;
+          @ ensures \result <==> (this.index < this.seq.length);
+          @*/
+        public /*@ pure @*/ boolean hasNext () {
+            return (this.index < this.seq.length);
+        }
+        
+        /*@ also
+          @ public normal_behavior
+          @ requires this.hasNext();
+          @ ensures this.index == \old(this.index) + 1;
+          @ ensures \result == this.seq[\old(this.index)];
+          @ assignable this.index;
+          @
+          @ also
+          @ public exceptional_behavior
+          @ requires !this.hasNext();
+          @ signals_only NoSuchElementException;
+          @ signals (NoSuchElementException) !this.hasNext();
+          @ assignable \nothing;
+          @*/ 
+        public Object next () throws NoSuchElementException {
+            if (this.hasNext()){
+                this.index++;
+                return this.seq[this.index - 1];
+            } else {
+                return new NoSuchElementException("Ya no hay mas elementos...");
+            }
+        }
+        
+        /*@ also
+          @ requires true;
+          @ ensures true;
+          @ assignable \nothing;
+          @*/ 
+        public void remove() {
+            System.out.println("Operacion no implementada para este tipo...");
+        }
+        
+    }
+    
     // public invariant ok(vt);
 	
     /*@ requires t.isEmpty();
@@ -474,15 +513,12 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
 	    for(int k = 0; k < pr.length() && !stop; k++){
                 int i = pr.charAt(k) - 'a';
 	        if (t.at[i] == null) {
-                    System.out.println("la letra "+pr.charAt(k)+" es nula...");
 	            stop = true;
                     return palabras;
                 }
                 t = t.at[i];
-                System.out.println("pongo a t en la letra: "+pr.charAt(k));
 	    }
             if (t != null) {
-                System.out.println("la letra del prefijo no es nula");
                 String[] tmp = t.extractWordsA();
                 palabras = new String[tmp.length];
                 for (int k = 0; k < tmp.length; k++) {
@@ -532,6 +568,6 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
     }
 
     public Iterator elems() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new elGenTries(this.vt);
     }
 }
