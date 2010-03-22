@@ -121,6 +121,7 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
         public /*@ pure @*/ boolean isEmpty() {
             if (this != null) {
                 boolean nulo = true;
+                
                 for (int k = 0; k < this.at.length && nulo; k++) {
                     if (this.at[k] != null) {
                         nulo = false;
@@ -162,7 +163,7 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
           @             )
           @         );
           @ assignable \nothing;
-          @ measured_by p.length();
+
           @*/ 
         public /*@ pure @*/ boolean isIn (String p) {
             if (!wf(p)) {
@@ -284,10 +285,10 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
         // set returnsNull = false;
         
         /*@ requires true;
-          @ ensures this.seq.length == t;
+          @ ensures this.seq.length == n.countWords();
           @ ensures (\forall int i; 
           @                 0 <= i && i < this.seq.length;
-          @                         this.seq[i].equals(s[i])
+          @                         n.isIn(this.seq[i])
           @         );
           @ ensures this.index == 0;
           @*/
@@ -507,8 +508,8 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
             Nodo t = vt;
             String[] palabras = new String[0];
             boolean stop = false;
-            /*@ loop_invariant 0 <= k && k <= pl.length();
-              @ decreasing pl.length() - k;
+            /*@ loop_invariant 0 <= k && k <= pr.length();
+              @ decreasing pr.length() - k;
               @*/
 	    for(int k = 0; k < pr.length() && !stop; k++){
                 int i = pr.charAt(k) - 'a';
