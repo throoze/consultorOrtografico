@@ -304,8 +304,14 @@ public class ConsultorOrtografico {
         System.out.println("0.2  -  11/03/2010");
         System.out.println("        SEGUNDO AVANCE... implementadas todas las opciones para la va-");
         System.out.println("        riante implementada con arreglos. Usando la variante con tries,");
-        System.out.println("        solo estan activas las opciones 1,2 y 3. Tambien se implementa-");
-        System.out.println("        ron los gestores de las nuevas excepciones utilizadas.");
+        System.out.println("        estan activas todas las opciones. Tambien se implementaron los");
+        System.out.println("        gestores de las nuevas excepciones utilizadas. Presenta proble-");
+        System.out.println("        mas con JML. Funciona perfecto si es compilado y corrido con los");
+        System.out.println("        comandos javac y java respectivamente.\n");
+        System.out.println("        SALIDA DE ERROR DE JML:\n");
+        System.out.println("        [...] (Las descripciones informales no son ejecutables)");
+        System.out.println("        File \"ConsultOrtTriesArreglos.java\", line 238, character 38 error:");
+        System.out.println("        Syntax error: unexpected token: >");
     }
     
     // GESTORES DE EXCEPCIONES:
