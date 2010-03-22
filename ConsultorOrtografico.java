@@ -218,27 +218,25 @@ public class ConsultorOrtografico {
         return time;
     }
     
-    public static void cargarArchivo(ConsultOrt c, String l, boolean variante) {
-        boolean excepcion = false;
+    public static void cargarArchivo(ConsultOrt c, boolean variante) {
         long[] tiempo = new long[2];
-        l = Console.readString("\nPor favor introduzca el nombre del archivo a leer:\n\n    >>   ");
+        String l = "";
         do {
             try {
+                l = Console.readString("\nPor favor introduzca el nombre del archivo a leer:\n\n    >>   ");
                 tiempo = loadFile(c, l);
             } catch (ExcepcionArchivoNoExiste ex) {
                 System.out.println("\n"+ex.gerMessage());
-                l = gestorArchivoNoExiste(c, l);
-                excepcion = true;
+                gestorArchivoNoExiste(l);
             } catch (ExcepcionNoEsArchivo ex) {
                 System.out.println("\n"+ex.gerMessage());
-                l = gestorNoEsArchivo(c, l);
-                excepcion = true;
+                gestorNoEsArchivo(l);
             } catch (ExcepcionArchivoNoSePuedeLeer ex) {
                 System.out.println("\n"+ex.gerMessage());
-                l = gestorArchivoNoSePuedeLeer(c, l);
-                excepcion = true;
+                gestorArchivoNoSePuedeLeer(l);
             }
-        } while (excepcion);
+        } while (!((new File(l)).exists() && (new File(l)).isFile() && 
+                                                    (new File(l)).canRead()));
         Long netTime = new Long(tiempo[0]);
         Long totalTime = new Long(tiempo[1]);
         double nt = netTime.doubleValue()/1000;
@@ -354,24 +352,12 @@ public class ConsultorOrtografico {
      *        usuario
      * @return un String que contiene un nuevo nombre de archivo valido.
      */
-    public static String gestorArchivoNoExiste (ConsultOrt c, String p) {
+    public static void gestorArchivoNoExiste (String p) {
         System.out.println("\nUd ha entrado al manejador de la excepcion:\n\n");
         System.out.println("       \"ExcepcionArchivoNoExiste\"");
         System.out.println("\n\nEl archivo que ud introdujo\n\n  \""+p+"\"\n");
         System.out.println("no existe...\n");
-        String f;
-        do {
-            System.out.println("Por favor ingrese un nuevo nobre de archivo");
-            System.out.println("El gestor lo prevendra de si el archivo  es un archivo valido o no...");
-            f = Console.readString("\n\n    >>   ");
-            if ( (!(new File(f)).isFile()) || 
-                 (!(new File(f)).canRead())||
-                 (!(new File(f)).exists())
-               ) {
-                System.out.println("\nEste archivo tampoco es valido...\n");
-            }
-        } while (!(new File(f)).exists());
-        return f;
+        System.out.println("Por favor ingrese un nuevo nombre de archivo");
     }
     
     /**
@@ -382,27 +368,12 @@ public class ConsultorOrtografico {
      *        usuario
      * @return un String que contiene un nuevo nombre de archivo valido.
      */
-    public static String gestorNoEsArchivo (ConsultOrt c, String p) {
+    public static void gestorNoEsArchivo (String p) {
         System.out.println("\nUd ha entrado al manejador de la excepcion:\n\n");
         System.out.println("       \"ExcepcionNoEsArchivo\"");
         System.out.println("\n\nEl archivo que ud introdujo\n\n  \""+p+"\"\n");
         System.out.println("no es un archivo...\n");
-        String f;
-        do {
-            System.out.println("Por favor ingrese un nuevo nobre de archivo");
-            System.out.println("El gestor lo prevendra de si el archivo  es un archivo valido o no...");
-            f = Console.readString("\n\n    >>   ");
-            if ( (!(new File(f)).isFile()) || 
-                 (!(new File(f)).canRead())||
-                 (!(new File(f)).exists())
-               ) {
-                System.out.println("\nEste archivo tampoco es valido...\n");
-            }
-        } while ( (!(new File(f)).isFile()) || 
-                  (!(new File(f)).canRead())||
-                  (!(new File(f)).exists()) 
-                );
-        return f;
+        System.out.println("Por favor ingrese un nuevo nombre de archivo");
     }
     
     /**
@@ -414,27 +385,12 @@ public class ConsultorOrtografico {
      *        usuario
      * @return un String que contiene un nuevo nombre de archivo valido.
      */
-    public static String gestorArchivoNoSePuedeLeer (ConsultOrt c, String p) {
+    public static void gestorArchivoNoSePuedeLeer (String p) {
         System.out.println("\nUd ha entrado al manejador de la excepcion:\n\n");
         System.out.println("       \"ExcepcionArchivoNoSePuedeLeer\"");
         System.out.println("\n\nEl archivo que ud introdujo\n\n  \""+p+"\"\n");
         System.out.println("no se puede leer...\n");
-        String f;
-        do {
-            System.out.println("Por favor ingrese un nuevo nobre de archivo");
-            System.out.println("El gestor lo prevendra de si el archivo  es un archivo valido o no...");
-            f = Console.readString("\n\n    >>   ");
-            if ( (!(new File(f)).isFile()) || 
-                 (!(new File(f)).canRead())||
-                 (!(new File(f)).exists())
-               ) {
-                System.out.println("\nEste archivo tampoco es valido...\n");
-            }
-        } while ( (!(new File(f)).isFile()) || 
-                  (!(new File(f)).canRead())||
-                  (!(new File(f)).exists()) 
-                );
-        return f;
+        System.out.println("Por favor ingrese un nuevo nombre de archivo");
     }
     
     public static void gestorNoSuchElement () {
@@ -580,7 +536,7 @@ public class ConsultorOrtografico {
                 }
             } else if (opc == 5) {
                 if (creado) {
-                    cargarArchivo(c, l, variante);
+                    cargarArchivo(c, variante);
                     System.out.println("\nFin del proceso de carga...\n");
                 } else {
                     System.out.println("\nNo se ha creado un nuevo Consultor Ortografico, no es posible realizar la operacion...");

@@ -138,7 +138,7 @@ public class ConsultOrtArreglos implements ConsultOrt
       @ signals (ExcepcionPalabraNoBienFormada) !bf(p);
       @ signals (ExcepcionPalabraYaRegistrada) this.pertenece(p);
       @ assignable \nothing;
-      @*/	  
+      @*/
     public void agregar(String p) throws 
             ExcepcionPalabraNoBienFormada,
             ExcepcionPalabraYaRegistrada

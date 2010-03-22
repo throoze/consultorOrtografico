@@ -1,42 +1,29 @@
 import java.util.Iterator;
 //@ model import org.jmlspecs.models.*;
 public class ConsultOrtTriesArreglos implements ConsultOrt {
-    
-    // MODELO DE REPRESENTACION:
-    
-    final static int TAMINIC = 26;
+    final static int TAMALFA = 26;
     private /*@ spec_public @*/ Nodo vt;
     
-    // FIN DEL MODELO DE REPRESENTACION...
-    
-    // CLASE INTERNA PRIVADA:
     private static class Nodo{
 	
-        //MODELO DE REPRESENTACION DE LA CLASE INTERNA (Nodo):
-        
         public Nodo at[];
         public boolean esPalabra;
-        
-        // FIN DEL MODELO DE REPRESENTACION DE LA CLASE INTERNA (Nodo)...
-        
-        // CONSTRUCTOR DE LA CLASE INTERNA (Nodo):
-	Nodo(){
-            this.at = new Nodo[TAMINIC];
-            this.esPalabra = true;
-        }
-        // FIN DEL CONSTRUCTOR DE LA CLASE INTERNA (Nodo)...
-        
-        // OPERACIONES DE LA CLASE INTERNA (Nodo):
+		
+	    Nodo(){
+                this.at = new Nodo[TAMALFA];
+		this.esPalabra = false;
+	    }
+            
         /**
-     * Operacion que devuelve un valor booleano que indica si el String que se 
-     * le pasa es una palabra "bien formada", esto es, cada uno de los 
-     * caracteres que lo conforman pertenece al conjunto { a - z } (alfabeto 
-     * ingles).
-     * @param p
-     * @return valor booleano que indica si el String que se le pasa es una 
-     *         palabra "bien formada", esto es, cada uno de los caracteres que 
-     *         lo conforman pertenece al conjunto { a - z } (alfabeto ingles).
-     */
+         * Operacion que devuelve un valor booleano que indica si el String que se 
+         * le pasa es una palabra "bien formada", esto es, cada uno de los 
+         * caracteres que lo conforman pertenece al conjunto { a - z } (alfabeto 
+         * ingles).
+         * @param p
+         * @return valor booleano que indica si el String que se le pasa es una 
+         *         palabra "bien formada", esto es, cada uno de los caracteres que 
+         *         lo conforman pertenece al conjunto { a - z } (alfabeto ingles).
+         */
         /*@ requires true;
           @ ensures \result <==> (!p.equals("")
           @             && 
@@ -48,7 +35,7 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
           @         );
           @ assignable \nothing;
           @*/
-        public /*@ pure @*/ boolean bf (String p) {
+        public /*@ pure @*/ boolean wf (String p) {
             if (!p.equals("")) {
                 boolean bf = true;
                 /*@ loop_invariant 0 <= k && k <= p.length() &&
@@ -72,6 +59,43 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
             }
         }
         
+        /**
+         * Operacion que devuelve un valor booleano que indica si el primer 
+         * parametro pasado es prefijo del segundo parametro pasado (ambos de tipo 
+         * String). 
+         * @param p de tipo String, prefijo a consultar
+         * @param q de tipo String, palabra sobre la cual se consultara el prefijo
+         * @return Valos booleano que devuelve 'true' si 'p' es prefijo de 'q' y 
+         *         devuelve 'false' en caso contrario.
+         */    
+        /*@ requires this.wf(p) && this.wf(q);
+          @ ensures \result <==> p.length() <= q.length()
+          @             &&
+          @             (\forall int i ; 0 <= i && i < p.length() 
+          @                 ; p.charAt(i) - q.charAt(i) == 0
+          @             );
+          @ assignable \nothing;
+          @*/
+        public /*@ pure @*/ boolean isPreFix (String p, String q) {
+            boolean ipf = true;
+            if (p.length() <= q.length()) {
+                /*@ loop_invariant 0 <= k && k <= p.length() &&
+                  @                (\forall int i; 0 <= i && i < k;
+                  @                         p.charAt(i) - q.charAt(i) == 0
+                  @                ) <==> ipf;
+                  @ decreasing p.length() - k;
+                  @*/
+                for (int k = 0; k < p.length() && ipf ; k++) {
+                    if (!(p.charAt(k) - q.charAt(k) == 0)) {
+                        ipf = false;
+                    }
+                }
+                return ipf;
+            } else {
+                return false;
+            }
+        }
+        
         /*@ requires true;
           @ ensures (this == null && \result <==> true)
           @         ||
@@ -80,7 +104,7 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
           @             &&
           @             (   
           @                 \result
-          @                 <==>
+          @                 ==
           @                 (
           @                     (\forall int e;
           @                             0 <= e && e < this.at.length;
@@ -96,26 +120,13 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
         public /*@ pure @*/ boolean isEmpty() {
             if (this != null) {
                 boolean nulo = true;
-                /*@ loop_invariant  (0 <= k && k <= this.at.length)
-                  @                 &&
-                  @                 (
-                  @                     nulo 
-                  @                     <==>
-                  @                     (\forall int e;
-                  @                             0 <= e && e < k; 
-                  @                                     this.at[e] == null
-                  @                     )
-                  @                 );
-                  @
-                  @ decreasing (this.at.length - k);
-                  @*/
                 for (int k = 0; k < this.at.length && nulo; k++) {
                     if (this.at[k] != null) {
                         nulo = false;
                     }
                 }
                 if (nulo) {
-                    nulo = (this.esPalabra);
+                    nulo = !(this.esPalabra);
                 }
                 return nulo;
             } else {
@@ -124,10 +135,10 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
         }
         
         /*@ requires true;
-          @ ensures (!this.bf(p) && \result <==> false)
+          @ ensures (!this.wf(p) && \result <==> false)
           @         ||
           @         (
-          @             this.bf(p)
+          @             this.wf(p)
           @             &&
           @             \result 
           @             <==>
@@ -153,102 +164,29 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
           @ measured_by p.length();
           @*/ 
         public /*@ pure @*/ boolean isIn (String p) {
-            if (!this.at[toInt(p,0)].isEmpty()) {
-                if (1 < p.length()) {
-                    return this.at[toInt(p,0)].isIn(p.substring(1));
-                } else {
-                    return this.esPalabra;
-                }
-            } else {
+            if (!wf(p)) {
                 return false;
-            }
-        }
-        
-        
-        /*@ requires true;
-          @ ensures (this.isEmpty() && \result == 0)
-          @         ||
-          @         (!this.isEmpty()
-          @         &&
-          @         \result 
-          @         ==
-          @         (this.esPalabra ? 1 : 0) + (\sum int i;
-          @                                         0 <= i && i < 26;
-          @                                             this.at[i].countWords()
-          @                                     )
-          @         );
-          @ assignable \nothing;
-          @*/
-        public /*@ pure @*/ int countWords () {
-            int n = 0;
-            if (!this.isEmpty()) {
-                /*@ loop_invariant 0 <= k && k <= 26 &&
-                  @    n == (\sum int i;
-                  @                 0 <= i && i < k;
-                  @                         this.at[i].countWords()
-                  @         );
-                  @ decreasing 26 - k;
-                  @*/
-                for (int k = 0; k < 26; k++) {
-                    n = n + this.at[k].countWords();
-                }
-                return (n + (this.esPalabra ? 1 : 0));
             } else {
-                return 0;
-            }
-        }
-        
-        public /*@ pure @*/ String[] extractWordsA () {
-            String[] words = new String[0];
-            if (!this.isEmpty()) {
-                for (int k = 0; k < 26; k++) {
-                    if (!this.at[k].isEmpty()) {
-                        String[] tmp = this.at[k].extractWordsA();
-                        words = new String[(this.esPalabra ? tmp.length + 1 : tmp.length)];
-                        if (this.esPalabra) {
-                            words[0] = "";
-                        }
-                        for (int l = (this.esPalabra ? 1 : 0); l < words.length; l++) {
-                            words[l] = Character.toString(toChar(k)) + tmp[l];
+                boolean esta = true;
+                Nodo t = this;
+                /*@ loop_invariant 0 <= k && k <= p.length();
+                  @ decreasing p.length() - k;
+                  @*/
+                for(int k = 0; k < p.length() && esta; k++){
+                    int i = p.charAt(k) - 'a';
+                    if (t.at[i] == null) {
+                        esta = false;
+                    } else {
+                        t = t.at[i];
+                        if (k == p.length() - 1 && t.esPalabra) {
+                            esta = true;
+                        } else if (k == p.length() - 1 && !t.esPalabra) {
+                            esta = false;
                         }
                     }
                 }
+                return esta;
             }
-            return words;
-        }
-        
-        
-        
-        /*@ requires 0 <= tam && tam < a.length;
-          @ ensures (\forall int i;
-          @                 0 <= i && i < a.length && i != tam;
-          @                         a[i].equals(\old(a[i]))
-          @         );
-          @ ensures a[tam].equals(p);
-          @ also
-          @ requires tam == a.length;
-          @ ensures a.length == 2 * \old(a.length);
-          @ ensures (\forall int i;
-          @                 0 <= i && i < tam && i != tam;
-          @                         a[i].equals(\old(a[i]))
-          @         );
-          @ ensures a[tam].equals(p);
-          @*/
-        public static void add (String[] a, String p, int tam) {
-            if (tam == a.length) {
-                String temp[] = new String[2 * a.length];
-                /*@ loop_invariant 0 <= i && i <= a.length &&
-                  @             (\forall int k; 0 <= k && k < i;
-                  @                 temp[k].equals(a[k])
-                  @             );
-                  @ decreasing a.length - i;
-                  @*/ 
-                for (int i = 0; i < a.length; i++){
-                    temp[i] = a[i];
-                }
-                a = temp;
-            }
-            a[tam] = p;
         }
         
         /*@ requires 0 <= i && i < 26;
@@ -259,20 +197,8 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
           @ assignable \nothing;
           @*/
         public static /*@ pure @*/ char toChar(int i){
-            if (i == 0) {return 'a';} else if (i == 1) {return 'b';
-            } else if (i == 2) {return 'c';} else if (i == 3) {return 'd';
-            } else if (i == 4) {return 'e';} else if (i == 5) {return 'f';
-            } else if (i == 6) {return 'g';} else if (i == 7) {return 'h';
-            } else if (i == 8) {return 'i';} else if (i == 9) {return 'j';
-            } else if (i == 10) {return 'k';} else if (i == 11) {return 'l';
-            } else if (i == 12) {return 'm';} else if (i == 13) {return 'n';
-            } else if (i == 14) {return 'o';} else if (i == 15) {return 'p';
-            } else if (i == 16) {return 'q';} else if (i == 17) {return 'r';
-            } else if (i == 18) {return 's';} else if (i == 19) {return 't';
-            } else if (i == 20) {return 'u';} else if (i == 21) {return 'v';
-            } else if (i == 22) {return 'w';} else if (i == 23) {return 'x';
-            } else if (i == 24) {return 'y';} else if (i == 25) {return 'z';
-            } else {return 'X';}
+            char[] a = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+            return a[i];
         }
         
         /*@ requires !p.equals("");
@@ -291,50 +217,117 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
             return (p.charAt(n) - 'a');
         }
         
-        public void proc (String s, String pr, int i){
-            if (esPalabra) {
-                i = i++;
+        /*@ requires true;
+          @ ensures (this == null && \result == 0)
+          @         ||
+          @         (this != null
+          @         &&
+          @         \result 
+          @         ==
+          @         (this.esPalabra ? 1 : 0) + (\sum int i;
+          @                                         0 <= i && i < 26;
+          @                                             this.at[i].countWords()
+          @                                     )
+          @         );
+          @ assignable \nothing;
+          @*/
+        public /*@ pure @*/ int countWords () {
+            int n = 0;
+            if (this != null) {
+                System.out.println("no es nulo, entro...");
+                /*@ loop_invariant 0 <= k && k <= 26 &&
+                  @    n == (\sum int i;
+                  @                 0 <= i && i < k;
+                  @                         this.at[i].countWords()
+                  @         );
+                  @ decreasing 26 - k;
+                  @*/
+                for (int k = 0; k < 26; k++) {
+                    if (this.at[k] != null) {
+                        System.out.println("veo el hijo n: " + k);
+                        n = n + this.at[k].countWords();
+                    }
+                }
+                System.out.println("si es palabra, le subo uno mas");
+                return (n + (this.esPalabra ? 1 : 0));
+            } else {
+                return 0;
             }
+        }
+        
+        public /*@ pure @*/ String[] extractWordsA () {
+            String[] words = new String[this.countWords()];
+            int i = 0;
+            if (this.esPalabra) {
+                words[i] = "";
+                i = 1;
+            }
+            if (this != null) {
+                for (int k = 0; k < 26; k++) {
+                    if (this.at[k] != null) {
+                        String[] tmp = this.at[k].extractWordsA();
+                        for (int c = 0; c < tmp.length; c++) {
+                            words[i] = Character.toString(toChar(k)) + tmp[c];
+                            i++;
+                        }
+                    }
+                }
+            }
+            return words;
+        }
+        /*
+        public String nts (String s, String pr, int i){
             String l = pr;
             for (int k =0; k < 26; k++){
                 if (this.at[k] != null) {
                     l = l + (char)(i + 'a');
-                    this.at[k].proc(s,l,i);
+                    this.at[k].nts(s,l,i);
                 }
             }
             if (this.esPalabra) {
                 s = s + l + " ";
             }
+            return l;
         }
-        // FIN DE LAS OPERACIONES DE LA CLASE INTERNA (Nodo)...
+        
+        public void nts (String p) {
+            if (!this.isEmpty()) {
+                Nodo t = this;
+                for (int k = 0; k < 26; k++) {
+                    
+                    if (!t.at[k].isEmpty()) {
+                        p = p +(t.at[k].esPalabra ?  "":"");
+                        t = t.at[k];
+                    } 
+                }
+            }
+        }
+        */
     }
-    // FIN DE LA CLASE INTERNA PRIVADA...
-    
-    // INVARIANTE DE REPRESENTACION:
-    
-    //@ public invariant ok(vt);
-    
-               // FUNCION AUXILIAR DE ABSTRACCION PARA EL INVARIANTE:
-    
+
+    // public invariant ok(vt);
+	
     /*@ requires t.isEmpty();
       @ ensures \result <==> true;
-      @ also 
+      @ also
       @ requires !t.isEmpty();
-      @ ensures \result 
+      @ ensures \result
       @         <==>
       @         (
-      @             (\forall int e; 
+      @             (\forall int e;
       @                     0 <= e && e < 26;
       @                             (t.at[e].isEmpty())==>t.esPalabra
       @             )
-      @             && 
+      @             &&
       @             (\forall int e;
-      @                     0 <= e && e < 26; 
-      @                             ok(t.at[e]) 
+      @                     0 <= e && e < 26;
+      @                             ok(t.at[e])
       @             )
       @         );
       @ public pure model boolean ok(Nodo t){
-      @     if (!t.isEmpty()) {
+      @     if (t.isEmpty()) {
+      @         return true;
+      @     } else {
       @         boolean flag = true;
       @         for (int k = 0 ; k < 26 && flag; k++) {
       @             if (!((t.at[k].isEmpty() ==> t.esPalabra) && ok(t.at[k]))) {
@@ -342,68 +335,57 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
       @             }
       @         }
       @         return flag;
-      @     } else {
-      @         return true;
       @     }
       @ }
       @*/
-    
-           // FIN DE LA FUNCION AUXILIAR DE ABSTRACCION PARA EL INVARIANTE...
-    
-    // FIN DEL INVARIANTE DE REPRESENTACION...
-    
-    // RELACION DE ACOPLAMIENTO:
-    
-    /*@ public represents 
-            vocabulario <- extr(this.vt).difference(new JMLValueSet(new JMLString("")));
+	
+    /*@ public represents
+      @     vocabulario <- extr(this.vt);
       @*/
-                // FUNCION DE ABSTRACCION:
-    
-    /* requires t.isEmpty();
-     * ensures \result.isEmpty();
-     * also
-     * requires !t.isEmpty();
-     * ensures \result == 
-     *          {e, x : 0 <= e < 26 && x E extr(a [e]) : toChar(e) o x } U B
-     */
-    /*@ public pure model JMLValueSet extr(Nodo t) {
-      @     JMLValueSet tmp = new JMLValueSet();
-      @     for (int k = 0; k < 26; k++) {
-      @         if (!t.at[k].isEmpty()) {
-      @             Iterator I = extr(t.at[k]).iterator();
-      @             while (I.hasNext()) {
-      @                 JMLString e = (new JMLString("toChar(k)")) + (new JMLString(I.next()));
-      @                 tmp.fast_insert(e);
-      @             }
-      @         }
-      @     }
+	  
+    /*@ public pure model JMLValueSet extr(Nodo t){
+      @     JMLValueSet tmp = extr("", t);
       @     return tmp;
-      @ }
+      @ }     
+      @  
+      @ private pure model JMLValueSet extr(String s, Nodo t){
+      @     JMLValueSet tmp = new JMLValueSet();
+      @     if (t != null)
+      @         if (t.esPalabra)
+      @             tmp = tmp.union(new JMLValueSet(new JMLString(s)));
+      @         for (int i = 0; i < TAMALFA; i++)
+      @             if(t.at[i] != null)
+      @                tmp = tmp.union(extr(s + (char)(i + 'a'), t.at[i]));    	
+      @     return tmp;
+      @ }      
       @*/
-                // FIN DE LA RELACION DE ABSTRACCION...
-    
-    // FIN DE LA RELACION DE ACOPLAMIENTO...
-    
-    // CONSTRUCTOR DE LA CLASE:
-    
-    /*@ requires 
-      @     true;
-      @ ensures 
-      @     vt != null;
-      @*/		
+	
+    /*@ requires
+            true;
+      @ ensures
+            vt != null;
+      @*/
     public ConsultOrtTriesArreglos()
     {
         vt = new Nodo();
     }
-    
-    // FIN DEL CONSTRUCTOR DE LA CLASE...
-    
-    // OPERACIONES DEL TIPO:
-    
+	
     /*@ also 
       @ public normal_behavior
+      @ requires bf(p) && !this.vt.isIn(p);
+      @ ensures true;
       @ assignable vt;
-      @*/   
+      @ also 
+      @ public exceptional_behavior
+      @ requires !bf(p)
+      @          ||
+      @          this.vt.isIn(p);
+      @ signals_only ExcepcionPalabraNoBienFormada,
+      @              ExcepcionPalabraYaRegistrada;
+      @ signals (ExcepcionPalabraNoBienFormada) !bf(p);
+      @ signals (ExcepcionPalabraYaRegistrada) this.vt.isIn(p);
+      @ assignable \nothing;
+      @*/
     public void agregar(String p) throws
 	    ExcepcionPalabraNoBienFormada, 
 	    ExcepcionPalabraYaRegistrada
@@ -413,32 +395,26 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
                     ("La palabra \""+p+"\" esta mal formada...");
         } else {
             Nodo t = vt;
+            /*@ loop_invariant 0 <= k && k <= p.length();
+              @ decreasing p.length() - k;
+              @*/
 	    for(int k = 0; k < p.length(); k++){
-	        int i = p.charAt(k) - 'a';
+                int i = p.charAt(k) - 'a';
 	        if (t.at[i] == null) {
 	            t.at[i] = new Nodo();
+                    t = t.at[i];
                 } else {
+                    t = t.at[i];
 		    if (k == p.length() - 1 && t.esPalabra) {
 		        throw new ExcepcionPalabraYaRegistrada
                                  ("La palabra \""+p+"\" ya esta registrada...");
                     }
                 }
-	        t = t.at[i];
 	    }
 	    t.esPalabra = true;
         }
     }
 	
-    /**
-     * Operacion que devuelve un valor booleano que indica si el String que se 
-     * le pasa es una palabra "bien formada", esto es, cada uno de los 
-     * caracteres que lo conforman pertenece al conjunto { a - z } (alfabeto 
-     * ingles).
-     * @param p
-     * @return valor booleano que indica si el String que se le pasa es una 
-     *         palabra "bien formada", esto es, cada uno de los caracteres que 
-     *         lo conforman pertenece al conjunto { a - z } (alfabeto ingles).
-     */
     /*@ also
       @ requires true;
       @ ensures \result <==> (!p.equals("")
@@ -451,149 +427,111 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
       @         );
       @ assignable \nothing;
       @*/
-    public /*@ pure @*/ boolean bf (String p) {
-        if (!p.equals("")) {
-            boolean bf = true;
-            /*@ loop_invariant 0 <= k && k <= p.length() &&
-              @         bf <==> (!p.equals("") &&
-              @                     (\forall int e; 0 <= e && e < k;
-              @                         0 <= p.charAt(e) - 'a'
-              @                         &&
-              @                         p.charAt(e) - 'a' <= 25 
-              @                     )
-              @                 );
-              @ decreasing p.length() - k;
-              @*/
-            for (int k = 0; k < p.length() && bf; k++) {
-                int code = p.charAt(k) - 'a';
-                bf = (0 <= code && code <= 25);
-            }
-            return bf;
-
-        } else {
-            return false;
-        }
+    public /*@ pure @*/ boolean  bf(String p)
+    {
+	return vt.wf(p);
     }
 	
-    /**
-     * Operacion que devuelve un valor booleano que indica si el primer 
-     * parametro pasado es prefijo del segundo parametro pasado (ambos de tipo 
-     * String). 
-     * @param p de tipo String, prefijo a consultar
-     * @param q de tipo String, palabra sobre la cual se consultara el prefijo
-     * @return Valos booleano que devuelve 'true' si 'p' es prefijo de 'q' y 
-     *         devuelve 'false' en caso contrario.
-     */    
     /*@ also
       @ requires bf(p) && bf(q);
       @ ensures \result <==> p.length() <= q.length()
       @             &&
-      @             (\forall int e ; 0 <= e && e < p.length() 
-      @                 ; p.charAt(e) - q.charAt(e) == 0
+      @             (\forall int i ; 0 <= i && i < p.length() 
+      @                 ; p.charAt(i) - q.charAt(i) == 0
       @             );
       @ assignable \nothing;
       @*/
-    public /*@ pure @*/ boolean ipf (String p, String q) {
-        boolean ipf = true;
-        if (p.length() <= q.length()) {
-            /*@ loop_invariant 0 <= k && k <= p.length() &&
-              @                (\forall int e; 0 <= e && e < k;
-              @                         p.charAt(e) - q.charAt(e) == 0
-              @                ) <==> ipf;
-              @ decreasing p.length() - k;
-              @*/
-            for (int k = 0; k < p.length() && ipf ; k++) {
-                if (!(p.charAt(k) - q.charAt(k) == 0)) {
-                    ipf = false;
-                }
-            }
-            return ipf;
-        } else {
-            return false;
-        }
+    public /*@ pure @*/ boolean  ipf(String p, String q)
+    {
+	return this.vt.isPreFix(p, q);
     }
 
-    /*@ also
-      @ requires 
-            true;
-      @ ensures 
-            true;
+    /*@ also 
+      @ public normal_behavior
+      @ requires this.bf(pr);
+      @ ensures true;
+      @ assignable \nothing;
+      @ also 
+      @ public exceptional_behavior
+      @ requires !bf(pr);
+      @ signals_only ExcepcionPalabraNoBienFormada;
+      @ signals (ExcepcionPalabraNoBienFormada) !bf(pr);
+      @ assignable \nothing;
       @*/
     public String[] consultarPorPrefijo(String pr) throws 
         ExcepcionPalabraNoBienFormada
     {
-        if (this.bf(pr)) {
-            Nodo t = this.vt;
+        if (!bf(pr)) {
+            throw new ExcepcionPalabraNoBienFormada
+                    ("La palabra \""+pr+"\" esta mal formada...");
+        } else {
+            Nodo t = vt;
             String[] palabras = new String[0];
-            for (int k = 0; k < pr.length(); k++) {
-                int e = pr.charAt(k) - 'a';
-                if (t.at[e].isEmpty()) {
-	            return palabras;
+            boolean stop = false;
+            /*@ loop_invariant 0 <= k && k <= pl.length();
+              @ decreasing pl.length() - k;
+              @*/
+	    for(int k = 0; k < pr.length() && !stop; k++){
+                int i = pr.charAt(k) - 'a';
+	        if (t.at[i] == null) {
+                    System.out.println("la letra "+pr.charAt(k)+" es nula...");
+	            stop = true;
+                    return palabras;
                 }
-	        t = t.at[e];
-            }
-            int tam = 0;
-            String s = "";
-            t.proc(s, pr, tam);
-            String[] tmp = t.extractWordsA();
-            palabras = new String[(t.esPalabra ? tmp.length + 1 : tmp.length)];
-            if (t.esPalabra) {
-                palabras[0] = "";
-            }
-            for (int k = (t.esPalabra ? 1 : 0); k < palabras.length; k++) {
-                palabras[k] = pr + tmp[k];
+                t = t.at[i];
+                System.out.println("pongo a t en la letra: "+pr.charAt(k));
+	    }
+            if (t != null) {
+                System.out.println("la letra del prefijo no es nula");
+                String[] tmp = t.extractWordsA();
+                palabras = new String[tmp.length];
+                for (int k = 0; k < tmp.length; k++) {
+                    palabras[k] = pr + tmp[k];
+                }
             }
             return palabras;
-        } else {
-            throw new ExcepcionPalabraNoBienFormada("La palabra \""+pr+"\" esta mal formada...");
         }
     }	
 
-    /*@ also
-      @ requires 
-            true;
-      @ ensures 
-            true;
+    /*@ also 
+      @ public normal_behavior
+      @ requires this.bf(pl);
+      @ ensures true;
+      @ assignable \nothing;
+      @ also 
+      @ public exceptional_behavior
+      @ requires !bf(pl);
+      @ signals_only ExcepcionPalabraNoBienFormada;
+      @ signals (ExcepcionPalabraNoBienFormada) !bf(pl);
+      @ assignable \nothing;
       @*/
     public String prefijoMasLargo(String pl) throws 
         ExcepcionPalabraNoBienFormada
     {
-        // COMPLETAR
-	return "";
+        if (!bf(pl)) {
+            throw new ExcepcionPalabraNoBienFormada
+                    ("La palabra \""+pl+"\" esta mal formada...");
+        } else {
+            String pml = "";
+            Nodo t = vt;
+            boolean stop = false;
+            /*@ loop_invariant 0 <= k && k <= pl.length();
+              @ decreasing pl.length() - k;
+              @*/
+	    for(int k = 0; k < pl.length() && !stop; k++){
+                int i = pl.charAt(k) - 'a';
+                pml = pl.substring(0, k+1);
+	        if (t.at[i] == null) {
+                    pml = pl.substring(0, k);
+	            stop = true;
+                }
+                t = t.at[i];
+	    }
+            return pml;
+        }
     }
 
     public Iterator elems() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    // FIN DE LAS OPERACIONES DEL TIPO...
-    
-    // METODOS AUXILIARES:
-
-    /*@ requires true;
-      @ ensures \result <==> this.vt.isEmpty();
-      @*/
-    private /*@ pure @*/ boolean esTvac () {
-        return this.vt.isEmpty();
-    }
-    
-    /*@ requires true;
-      @ ensures \result <==> this.vt.isIn(p);
-      @*/
-    private /*@ pure @*/ boolean pertenece (String p) {
-        return this.vt.isIn(p);
-    }
-    
-    /*@ requires true;
-      @ ensures \result == this.vt.countWords();
-      @*/
-    private /*@ pure @*/ int contarPalabras () {
-        return this.vt.countWords();
-    }
-    
-    
-    
-    // FIN DE LOS METODOS AUXILIARES...
-
-// FIN DE LA CLASE...
 }
