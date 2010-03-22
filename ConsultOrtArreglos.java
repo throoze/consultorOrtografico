@@ -455,7 +455,6 @@ public class ConsultOrtArreglos implements ConsultOrt
         private /*@ spec_public @*/ int index;
         
         //@ public represents moreElements <- this.hasNext();
-        // set returnsNull = false;
         
         /*@ requires true;
           @ ensures this.seq.length == t;

@@ -121,7 +121,10 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
         public /*@ pure @*/ boolean isEmpty() {
             if (this != null) {
                 boolean nulo = true;
-                
+                /*@ loop_invariant 0 <= k && k <= this.at.length &&
+                  @       (\forall int i; 0 <= i && i < 26; this.at[i] == null);
+                  @ decreasing this.at.length - k;
+                  @*/
                 for (int k = 0; k < this.at.length && nulo; k++) {
                     if (this.at[k] != null) {
                         nulo = false;
@@ -163,7 +166,7 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
           @             )
           @         );
           @ assignable \nothing;
-
+          @ measured_by p.length();
           @*/ 
         public /*@ pure @*/ boolean isIn (String p) {
             if (!wf(p)) {
@@ -171,7 +174,8 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
             } else {
                 boolean esta = true;
                 Nodo t = this;
-                /*@ loop_invariant 0 <= k && k <= p.length();
+                /*@ loop_invariant 0 <= k && k <= p.length() &&
+                  @         (*Se han revisado los nodos correspondientes a las letras de p hasta la k-esima*);
                   @ decreasing p.length() - k;
                   @*/
                 for(int k = 0; k < p.length() && esta; k++){
@@ -254,6 +258,14 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
             }
         }
         
+        
+        /*@ requires true;
+          @ ensures (\forall int i;
+          @             0 <= i && i < \result.length;
+          @                 this.isIn(\result[i])
+          @         )
+          @         && (*Si una palabra esta en this, esta tambien en \result*);
+          @*/
         public /*@ pure @*/ String[] extractWordsA () {
             String[] words = new String[this.countWords()];
             int i = 0;
@@ -262,9 +274,24 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
                 i = 1;
             }
             if (this != null) {
+                /*@ loop_invariant  0 <= k && k <= 26 &&
+                  @     (*Se han extraido las palabras de los hijos de this 
+                  @       hasta el k-esimo hijo, y se han almacenado en el 
+                  @       arreglo de salida, cada palabra concatenada al 
+                  @      principio con el caracter correspondiente a si mismo*);
+                  @ decreasing 26 -k;
+                  @*/
                 for (int k = 0; k < 26; k++) {
                     if (this.at[k] != null) {
                         String[] tmp = this.at[k].extractWordsA();
+                        /*@ loop_invariant 0 <= c && c <= tmp.length &&
+                          @     (\forall int n,m; 0 <= n && n < c &&
+                          @                     i-c <= m && m < i ;
+                          @         words[m].equals
+                          @             (Character.toString(toChar(k)) + tmp[n])
+                          @     )
+                          @ decreasing tmp.length - c;
+                          @*/
                         for (int c = 0; c < tmp.length; c++) {
                             words[i] = Character.toString(toChar(k)) + tmp[c];
                             i++;
@@ -282,7 +309,6 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
         private /*@ spec_public @*/ int index;
         
         //@ public represents moreElements <- this.hasNext();
-        // set returnsNull = false;
         
         /*@ requires true;
           @ ensures this.seq.length == n.countWords();
@@ -413,7 +439,8 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
     /*@ also 
       @ public normal_behavior
       @ requires bf(p) && !this.vt.isIn(p);
-      @ ensures true;
+      @ ensures this.vt.isIn(p) && 
+      @     (*Se conservan el resto de las palabras que pertenecian al arbol*);
       @ assignable vt;
       @ also 
       @ public exceptional_behavior
@@ -435,7 +462,10 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
                     ("La palabra \""+p+"\" esta mal formada...");
         } else {
             Nodo t = vt;
-            /*@ loop_invariant 0 <= k && k <= p.length();
+            /*@ loop_invariant 0 <= k && k <= p.length() && 
+              @     (*Si hace falta, se han inicializado todos los nodos 
+              @       correspondientes a las letras de p hasta la k-esima 
+              @       letra*);
               @ decreasing p.length() - k;
               @*/
 	    for(int k = 0; k < p.length(); k++){
@@ -489,7 +519,29 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
     /*@ also 
       @ public normal_behavior
       @ requires this.bf(pr);
-      @ ensures true;
+      @ ensures (*El arbol no se ha modificado*);
+      @ ensures (\forall int i, j ;
+      @                     0 <= i && i < \result.length
+      @                     &&
+      @                     0 <= j && j < \result.length
+      @                     &&
+      @                     i != j;
+      @                                 !\result[i].equals(\result[j])
+      @         );
+      @ ensures (\forall int i ;
+      @                 0 <= i && i < \result.length;
+      @                         this.vt.isIn(\result[i])
+      @         );
+      @ ensures (\forall int i ;
+      @                     0 <= i && i < \result.length;
+      @                                 ipf(pr, \result[i])
+      @         );
+      @ ensures (\forall int i,j;
+      @             0 <= i && i < this.tam && 
+      @             0 <= j && j < \result.length &&
+      @             !this.vt.isIn(\result[i]);
+      @             !ipf(pr,this.va[i])
+      @         );
       @ assignable \nothing;
       @ also 
       @ public exceptional_behavior
@@ -508,7 +560,9 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
             Nodo t = vt;
             String[] palabras = new String[0];
             boolean stop = false;
-            /*@ loop_invariant 0 <= k && k <= pr.length();
+            /*@ loop_invariant 0 <= k && k <= pr.length() &&
+              @     (*Se ha bajado por el arbol hasta el nodo que rrepresenta la
+              @       k-esima letra de pr*);
               @ decreasing pr.length() - k;
               @*/
 	    for(int k = 0; k < pr.length() && !stop; k++){
@@ -522,6 +576,13 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
             if (t != null) {
                 String[] tmp = t.extractWordsA();
                 palabras = new String[tmp.length];
+                /*@ loop_invariant 0 <= k && k <= tmp.length &&
+                  @     (\forall int i;
+                  @             0 <= i && i < k;
+                  @                     palabras[i].equals(pr + tmp[i])
+                  @     );
+                  @ decreasing tmp.length - k;
+                  @*/
                 for (int k = 0; k < tmp.length; k++) {
                     palabras[k] = pr + tmp[k];
                 }
@@ -567,7 +628,11 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
             return pml;
         }
     }
-
+    
+    /*@ also
+      @ requires true;
+      @ ensures \result != null;
+      @*/
     public Iterator elems() {
         return new elGenTries(this.vt);
     }
