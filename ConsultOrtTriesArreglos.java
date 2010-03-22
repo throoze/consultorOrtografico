@@ -289,7 +289,7 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
                           @                     i-c <= m && m < i ;
                           @         words[m].equals
                           @             (Character.toString(toChar(k)) + tmp[n])
-                          @     )
+                          @     );
                           @ decreasing tmp.length - c;
                           @*/
                         for (int c = 0; c < tmp.length; c++) {
@@ -536,11 +536,10 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
       @                     0 <= i && i < \result.length;
       @                                 ipf(pr, \result[i])
       @         );
-      @ ensures (\forall int i,j;
-      @             0 <= i && i < this.tam && 
-      @             0 <= j && j < \result.length &&
+      @ ensures (\forall int i;
+      @             0 <= i && i < \result.length && 
       @             !this.vt.isIn(\result[i]);
-      @             !ipf(pr,this.va[i])
+      @             !ipf(pr,\result[i])
       @         );
       @ assignable \nothing;
       @ also 
