@@ -337,7 +337,7 @@ public class ConsultorOrtografico {
     
     public static void historialDeVersiones () {
         System.out.println("\nHistorial de versiones:\n");
-        System.out.println("0.1  -  01/03/2010");
+        System.out.println("Version 0.1  -  01/03/2010");
         System.out.println("        PRIMER AVANCE... estan implementadas nada "+
                 "mas las 4 primeras");
         System.out.println("        opciones, correspondientes a la variante d"+
@@ -345,7 +345,7 @@ public class ConsultorOrtografico {
         System.out.println("        tada con arreglos. Maneja eficientemente l"+
                 "as excepciones lan-");
         System.out.println("        zadas por las operaciones.\n");
-        System.out.println("0.2  -  11/03/2010");
+        System.out.println("Version 0.2  -  11/03/2010");
         System.out.println("        SEGUNDO AVANCE... implementadas todas las "+
                 "opciones para la va-");
         System.out.println("        riante implementada con arreglos. Usando l"+
@@ -362,7 +362,34 @@ public class ConsultorOrtografico {
                 " ejecutables)");
         System.out.println("        File \"ConsultOrtTriesArreglos.java\", lin"+
                 "e 238, character 38 error:");
-        System.out.println("        Syntax error: unexpected token: >");
+        System.out.println("        Syntax error: unexpected token: >\n");
+        System.out.println("Version 0.3 -> 1.0 ");
+        System.out.println("        04/04/2010");
+        System.out.println("        TERCER AVANCE... (Entrega final)");
+        System.out.println("        FUNCIONALIDAD COMPLETA, PRIMERA VERSION "+
+                "ESTABLE (V. 1.0)");
+        System.out.println("        Estan implementadas todas las opciones y "+
+                "funciones para las");
+        System.out.println("        dos variantes (Arreglos y Tries). "+
+                "Funcionalidad total tan-");
+        System.out.println("        to utilizando los comandos compilador y "+
+                "ejecutador de 'JML'");
+        System.out.println("        ('jmlc' y 'jmlrac' respectivamente),como "+
+                "usando los coman-");
+        System.out.println("        dos compilador y ejecutador de 'java' "+
+                "('javac' y 'java' ");
+        System.out.println("        respectivamente). Areglada la identacion y"+
+                " organizacion del");
+        System.out.println("        codigo de manera que ninguna linea exceda "+
+                "las 80 columnas,");
+        System.out.println("        (para facilitar lectura del codigo "+
+                "impreso). Codigo alta-");
+        System.out.println("        mente comentado. Se utilizo el manejador "+
+                "de versiones 'git'");
+        System.out.println("        de manera centralizada con un repositorio "+
+                "hospedado en:");
+        System.out.println("        "+
+                "http://github.com/throoze/consultorOrtografico");
     }
     
     // GESTORES DE EXCEPCIONES:
