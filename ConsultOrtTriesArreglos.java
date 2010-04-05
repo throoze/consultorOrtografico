@@ -2,19 +2,36 @@ import java.util.Iterator;
 //@ model import org.jmlspecs.models.*;
 import java.util.NoSuchElementException;
 public class ConsultOrtTriesArreglos implements ConsultOrt {
+    
+    // MODELO DE REPRESENTACION:
+    //////////////////////////////////////////////////////
     final static int TAMALFA = 26;
     private /*@ spec_public @*/ Nodo vt;
+    //////////////////////////////////////////////////////
     
+    
+    //CLASES INTERNAS:
+    //////////////////////////////////////////////////////
+    //CLASE Nodo:
+    //////////////////////////////////////////////////////
     private static class Nodo{
 	
+        //MODELO DE REPRESENTACION:
+        //////////////////////////////////////////////////////
         public Nodo at[];
         public boolean esPalabra;
-		
-	    Nodo(){
+        //////////////////////////////////////////////////////
+        
+        //CONSTRUCTOR DE LA CLASE:
+        //////////////////////////////////////////////////////
+	public Nodo(){
                 this.at = new Nodo[TAMALFA];
 		this.esPalabra = false;
-	    }
-            
+	}
+        //////////////////////////////////////////////////////
+        
+        //OPERACIONES DE LA CLASE:
+        //////////////////////////////////////////////////////
         /**
          * Operacion que devuelve un valor booleano que indica si el String que se 
          * le pasa es una palabra "bien formada", esto es, cada uno de los 
@@ -175,7 +192,8 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
                 boolean esta = true;
                 Nodo t = this;
                 /*@ loop_invariant 0 <= k && k <= p.length() &&
-                  @         (*Se han revisado los nodos correspondientes a las letras de p hasta la k-esima*);
+                  @         (*Se han revisado los nodos correspondientes a las 
+                  @           letras de p hasta la k-esima*);
                   @ decreasing p.length() - k;
                   @*/
                 for(int k = 0; k < p.length() && esta; k++){
@@ -203,7 +221,8 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
           @ assignable \nothing;
           @*/
         public static /*@ pure @*/ char toChar(int i){
-            char[] a = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+            char[] a = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n',
+                               'o','p','q','r','s','t','u','v','w','x','y','z'};
             return a[i];
         }
         
@@ -224,9 +243,9 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
         }
         
         /*@ requires true;
-          @ ensures (this == null && \result == 0)
+          @ ensures (this.isEmpty() && \result == 0)
           @         ||
-          @         (this != null
+          @         (!this.isEmpty()
           @         &&
           @         \result 
           @         ==
@@ -301,15 +320,25 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
             }
             return words;
         }
+        //////////////////////////////////////////////////////
     }
-
+    //////////////////////////////////////////////////////
+    //CLASE elGenTries:
+    //////////////////////////////////////////////////////
     private static class elGenTries implements Iterator {
-        
+        //MODELO DE REPRESENTACION:
+        //////////////////////////////////////////////////////
         private /*@ spec_public @*/ String[] seq;
         private /*@ spec_public @*/ int index;
+        //////////////////////////////////////////////////////
         
+        //INVARIANTE DE REPRESENTACION:
+        //////////////////////////////////////////////////////
         //@ public represents moreElements <- this.hasNext();
+        //////////////////////////////////////////////////////
         
+        //CONSTRUCTOR DE LA CLASE:
+        //////////////////////////////////////////////////////
         /*@ requires true;
           @ ensures this.seq.length == n.countWords();
           @ ensures (\forall int i; 
@@ -328,7 +357,10 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
              */
             this.index = 0;
         }
+        //////////////////////////////////////////////////////
         
+        //OPERACIONES DE LA CLASE:
+        //////////////////////////////////////////////////////
         /*@ also
           @ requires true;
           @ ensures \result <==> (this.index < this.seq.length);
@@ -368,9 +400,12 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
         public void remove() {
             System.out.println("Operacion no implementada para este tipo...");
         }
-        
+        //////////////////////////////////////////////////////
     }
+    //////////////////////////////////////////////////////
     
+    //INVARIANTE DE REPRESENTACION:
+    //////////////////////////////////////////////////////
     // public invariant ok(vt);
 	
     /*@ requires t.isEmpty();
@@ -382,7 +417,7 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
       @         (
       @             (\forall int e;
       @                     0 <= e && e < 26;
-      @                             (t.at[e].isEmpty())==>t.esPalabra
+      @                             (t.at[e].isEmpty() || !t.esPalabra)
       @             )
       @             &&
       @             (\forall int e;
@@ -396,7 +431,7 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
       @     } else {
       @         boolean flag = true;
       @         for (int k = 0 ; k < 26 && flag; k++) {
-      @             if (!((t.at[k].isEmpty() ==> t.esPalabra) && ok(t.at[k]))) {
+      @             if (!((t.at[k].isEmpty() || !t.esPalabra) && ok(t.at[k]))) {
       @                 flag = false;
       @             }
       @         }
@@ -404,7 +439,10 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
       @     }
       @ }
       @*/
-	
+    //////////////////////////////////////////////////////
+    
+    //RELACION DE ACOPLAMIENTO:
+    //////////////////////////////////////////////////////
     /*@ public represents
       @     vocabulario <- extr(this.vt);
       @*/
@@ -425,7 +463,10 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
       @     return tmp;
       @ }      
       @*/
-	
+    //////////////////////////////////////////////////////
+    
+    //CONSTRUCTOR DE LA CLASE:
+    //////////////////////////////////////////////////////
     /*@ requires
             true;
       @ ensures
@@ -435,7 +476,10 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
     {
         vt = new Nodo();
     }
-	
+    //////////////////////////////////////////////////////
+    
+    //OPERACIONES DEL TIPO:
+    //////////////////////////////////////////////////////
     /*@ also 
       @ public normal_behavior
       @ requires bf(p) && !this.vt.isIn(p);
@@ -560,7 +604,7 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
             String[] palabras = new String[0];
             boolean stop = false;
             /*@ loop_invariant 0 <= k && k <= pr.length() &&
-              @     (*Se ha bajado por el arbol hasta el nodo que rrepresenta la
+              @     (*Se ha bajado por el arbol hasta el nodo que representa la
               @       k-esima letra de pr*);
               @ decreasing pr.length() - k;
               @*/
@@ -635,4 +679,5 @@ public class ConsultOrtTriesArreglos implements ConsultOrt {
     public Iterator elems() {
         return new elGenTries(this.vt);
     }
+    //////////////////////////////////////////////////////
 }

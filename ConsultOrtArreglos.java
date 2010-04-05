@@ -100,7 +100,8 @@ public class ConsultOrtArreglos implements ConsultOrt
      * @throws ExcepcionPalabraNoBienFormada
      * @throws ExcepcionPalabraYaRegistrada
      */
-    /* agregado a los requires del normal behavior: this.bf(p) && !this.pertenece(p)
+    /* agregado a los requires del normal behavior: this.bf(p) && 
+     *                                                        !this.pertenece(p)
      * debido a problemas con excepciones...
      */
     /*@ also
@@ -144,11 +145,13 @@ public class ConsultOrtArreglos implements ConsultOrt
             ExcepcionPalabraYaRegistrada
     {
         if (!bf(p)) {
-            throw new ExcepcionPalabraNoBienFormada("La palabra \""+p+"\" esta mal formada...");
+            throw new ExcepcionPalabraNoBienFormada("La palabra \""+p+"\" esta"+
+                    " mal formada...");
         } else {
             int posi = bb(va, p);
             if (posi < this.tam && va[posi].equals(p)) {
-                throw new ExcepcionPalabraYaRegistrada("La palabra \""+p+"\" ya esta registrada...");
+                throw new ExcepcionPalabraYaRegistrada("La palabra \""+p+"\" "+
+                        "ya esta registrada...");
             } else {
                 if (this.tam == this.va.length){
                     String vtemp[] = new String[2 * va.length];
@@ -341,7 +344,7 @@ public class ConsultOrtArreglos implements ConsultOrt
                 list = new String[end - start];                
                 /*@ loop_invariant 0 <= k && k <= list.length &&
                   @                (\forall int i; 0 <= i && i < k;
-                  @                            list[i].equals(this.va[start + i])
+                  @                           list[i].equals(this.va[start + i])
                   @                );
                   @ decreasing list.length - k;
                   @*/ 
@@ -354,7 +357,8 @@ public class ConsultOrtArreglos implements ConsultOrt
                 return list;
             }
         } else {
-            throw new ExcepcionPalabraNoBienFormada("La palabra \""+pr+"\" esta mal formada...");
+            throw new ExcepcionPalabraNoBienFormada("La palabra \""+pr+"\" "+
+                    "esta mal formada...");
         }
     }	
 
@@ -428,7 +432,8 @@ public class ConsultOrtArreglos implements ConsultOrt
             }
             return pref;
         } else {
-            throw new ExcepcionPalabraNoBienFormada("La palabra \""+pl+"\" esta mal formada...");
+            throw new ExcepcionPalabraNoBienFormada("La palabra \""+pl+"\" "+
+                    "esta mal formada...");
         }
     }
     

@@ -82,7 +82,8 @@ public class ConsultorOrtografico {
             br = new BufferedReader(new FileReader(f));
         } catch (IOException e) {
             e.getMessage();
-            System.out.println("Hubo un error al abrir el archivo \n\n      \""+f+"\"\n\nNo se encuentra...");
+            System.out.println("Hubo un error al abrir el archivo \n\n      \""+
+                    f+"\"\n\nNo se encuentra...");
         }
         while (!stop) {
             try {
@@ -93,9 +94,12 @@ public class ConsultorOrtografico {
                     l++;
                 }
             } catch (IOException e) {
-                System.out.println("Ocurrio un error al separar en lineas el archivo \n\n      \""+f+"\"\n\nMientras se leia la linea: "+l);
+                System.out.println("Ocurrio un error al separar en lineas el a"+
+                        "rchivo \n\n      \""+f+"\"\n\nMientras se leia la lin"+
+                        "ea: "+l);
                 System.out.println(e.getMessage());
-                System.out.println("Esta linea sera ignorada...\nContinuando la carga del archivo...");
+                System.out.println("Esta linea sera ignorada...\nContinuando l"+
+                        "a carga del archivo...");
             }
         }
         return l;
@@ -139,13 +143,15 @@ public class ConsultorOrtografico {
                 br = new BufferedReader(new FileReader(f));
             } catch (IOException e) {
                 errOut = errOut + e.getMessage();
-                errOut = errOut +"\n"+"Hubo un error al abrir el archivo \n\n      \""+f+"\"\n\nNo se encuentra...\n";
+                errOut = errOut +"\n"+"Hubo un error al abrir el archivo \n\n "+
+                        "     \""+f+"\"\n\nNo se encuentra...\n";
             }
             boolean stop = false;
             l = 1;
             long startTime = 0;
             long stopTime = 0;
-            System.out.println("\nComienza el proceso de carga del archivo \""+f+"\"...\n");
+            System.out.println("\nComienza el proceso de carga del archivo \""+f
+                    +"\"...\n");
             System.out.println("Progreso:\n");
             System.out.print("[");
             do {
@@ -162,51 +168,71 @@ public class ConsultorOrtografico {
                                 if ( (l <= nLines/2 ) && (stepAt <= counter) ) {
                                     counter = 0.0;
                                     System.out.print("#");
-                                } else if ( (l <= (nLines*3)/4 ) && (stepAt/2 <= counter) ) {
+                                } else if ( (l <= (nLines*3)/4 ) && 
+                                                       (stepAt/2 <= counter) ) {
                                     counter = 0.0;
                                     System.out.print("#");
-                                } else if ( (l <= (nLines*7)/8 ) && (stepAt/4 <= counter) ) {
+                                } else if ( (l <= (nLines*7)/8 ) &&
+                                                       (stepAt/4 <= counter) ) {
                                     counter = 0.0;
                                     System.out.print("#");
-                                } else if ( (l <= (nLines*15)/16 ) && (stepAt/8 <= counter) ) {
+                                } else if ( (l <= (nLines*15)/16 ) &&
+                                                       (stepAt/8 <= counter) ) {
                                     counter = 0.0;
                                     System.out.print("#");
-                                } else if ( (l <= (nLines*31)/32 ) && (stepAt/16 <= counter) ) {
+                                } else if ( (l <= (nLines*31)/32 ) &&
+                                                      (stepAt/16 <= counter) ) {
                                     counter = 0.0;
                                     System.out.print("#");
                                 } else {
                                     counter = counter + 1.0;
                                 }
                         } catch (ExcepcionPalabraNoBienFormada ex) {
-                            errOut = errOut +"\n"+"(Linea "+l+") \""+linea+"\" es una palabra mal formada...";
-                            errOut = errOut +"\n"+"Esta linea sera ignorada...\nSe continua con la carga del archivo...\n";
+                            errOut = errOut +"\n"+"(Linea "+l+") \""+linea+"\""+
+                                    " es una palabra mal formada...";
+                            errOut = errOut +"\n"+"Esta linea sera ignorada..."+
+                                    "\nSe continua con la carga del archivo..."+
+                                    "\n";
                         } catch (ExcepcionPalabraYaRegistrada ex) {
-                            errOut = errOut +"\n"+"(Linea "+l+") "+ex.gerMessage();
-                            errOut = errOut +"\n"+"Esta linea sera ignorada...\nContinuando la carga del archivo...\n";
+                            errOut = errOut +"\n"+"(Linea "+l+") "+
+                                    ex.gerMessage();
+                            errOut = errOut +"\n"+"Esta linea sera ignorada..."+
+                                    "\nContinuando la carga del archivo...\n";
                         }
                     }
                 } catch (IOException e) {
-                    errOut = errOut +"\n"+"Ocurrio un error al separar en lineas el archivo \n\n      \""+f+"\"\n\nMientras se leia la linea: "+l;
+                    errOut = errOut +"\n"+"Ocurrio un error al separar en line"+
+                            "as el archivo \n\n      \""+f+"\"\n\nMientras se "+
+                            "leia la linea: "+l;
                     errOut = errOut +"\n"+e.getMessage();
-                    errOut = errOut +"\n"+"Esta linea sera ignorada...\nContinuando la carga del archivo...\n";
+                    errOut = errOut +"\n"+"Esta linea sera ignorada...\nContin"+
+                            "uando la carga del archivo...\n";
                 }
                 l++;
             } while (!stop);
             System.out.print("] 100%\n");
-            System.out.println("\nLa carga del archivo \""+f+"\" ha sido completada exitosamente!!!\n");
+            System.out.println("\nLa carga del archivo \""+f+"\" ha sido compl"+
+                    "etada exitosamente!!!\n");
         } else if (!(new File(f)).exists()) {
-            throw new ExcepcionArchivoNoExiste("El archivo \""+f+"\" no existe...");
+            throw new ExcepcionArchivoNoExiste("El archivo \""+f+"\" no existe"+
+                    "...");
         } else if (!(new File(f)).isFile()) {
-            throw new ExcepcionNoEsArchivo("El archivo \""+f+"\" no es un archivo...");
+            throw new ExcepcionNoEsArchivo("El archivo \""+f+"\" no es un arch"+
+                    "ivo...");
         } else if (!(new File(f)).canRead()) {
-            throw new ExcepcionArchivoNoSePuedeLeer("El archivo \""+f+"\" no se puede leer...");
+            throw new ExcepcionArchivoNoSePuedeLeer("El archivo \""+f+"\" no s"+
+                    "e puede leer...");
         }
         if (!errOut.equals("")) {
-            System.out.println("Ocurrieron algunos errores durante la carga...");
-            System.out.println("Estos errores pueden no ser graves, pero conviene revisarlos...");
+            System.out.println("Ocurrieron algunos errores durante la carga"+
+                    "...");
+            System.out.println("Estos errores pueden no ser graves, pero convi"+
+                    "ene revisarlos...");
             do {
-                linea = Console.readString("\n Ud desea revisar los errores? (s/n)\n\n    >>   ");
-            } while ( !linea.equalsIgnoreCase("s") && !linea.equalsIgnoreCase("n") );
+                linea = Console.readString("\n Ud desea revisar los errores? "+
+                        "(s/n)\n\n    >>   ");
+            } while ( !linea.equalsIgnoreCase("s") && 
+                                                 !linea.equalsIgnoreCase("n") );
             if (linea.equalsIgnoreCase("s")) {
                 System.out.println("\nSALIDA DE ERROR:\n\n" + errOut+"\n");
             }
@@ -222,7 +248,8 @@ public class ConsultorOrtografico {
         String l = "";
         do {
             try {
-                l = Console.readString("\nPor favor introduzca el nombre del archivo a leer:\n\n    >>   ");
+                l = Console.readString("\nPor favor introduzca el nombre del a"+
+                        "rchivo a leer:\n\n    >>   ");
                 tiempo = loadFile(c, l);
             } catch (ExcepcionArchivoNoExiste ex) {
                 System.out.println("\n"+ex.gerMessage());
@@ -243,13 +270,23 @@ public class ConsultorOrtografico {
         double di = tt - nt;
         long diff = tiempo[1] - tiempo[0];
         do {
-            l = Console.readString("\n Ud desea ver el informe de tiempo de ejecucion? (s/n)\n\n    >>   ");
+            l = Console.readString("\n Ud desea ver el informe de tiempo de ej"+
+                    "ecucion? (s/n)\n\n    >>   ");
         } while ( !l.equalsIgnoreCase("s") && !l.equalsIgnoreCase("n") );
         if (l.equalsIgnoreCase("s")) {
             System.out.println("\nINFORME DEL TIEMPO DE EJECUCION:");
-            System.out.println("\nEl tiempo neto usado por el metodo \"agregar\", implementado con la variante "+( variante ? "\"Arreglos\"" : "\"Tries\"" )+" es de "+nt+" segundos ("+tiempo[0]+" milisegundos)...");
-            System.out.println("\nEl tiempo total usado por el metodo \"loadFile\", implementado con la variante "+( variante ? "\"Arreglos\"" : "\"Tries\"" )+" es de "+tt+" segundos ("+tiempo[1]+" milisegundos)...");
-            System.out.println("\nLa diferencia entre el tiempo usado por los metodos \"loadFile\" y \"agregar\", implementados con la variante "+( variante ? "\"Arreglos\"" : "\"Tries\"" )+" es de "+di+" segundos ("+diff+" milisegundos)...");
+            System.out.println("\nEl tiempo neto usado por el metodo \"agregar"+
+                    "\", implementado con la variante "+( variante ? "\"Arregl"+
+                    "os\"" : "\"Tries\"" )+" es de "+nt+" segundos ("+
+                    tiempo[0]+" milisegundos)...");
+            System.out.println("\nEl tiempo total usado por el metodo \"loadFi"+
+                    "le\", implementado con la variante "+( variante ? "\"Arre"+
+                    "glos\"" : "\"Tries\"" )+" es de "+tt+" segundos ("+
+                    tiempo[1]+" milisegundos)...");
+            System.out.println("\nLa diferencia entre el tiempo usado por los "+
+                    "metodos \"loadFile\" y \"agregar\", implementados con la "+
+                    "variante "+( variante ? "\"Arreglos\"" : "\"Tries\"" )+" "+
+                    "es de "+di+" segundos ("+diff+" milisegundos)...");
         }
     }
     
@@ -263,7 +300,8 @@ public class ConsultorOrtografico {
     public static void listarVoc (ConsultOrt c){
         Iterator e = c.elems();
         if (e.hasNext()) {
-            System.out.println("\nEl vocabulario de este Consultor Ortografico contiene las palabras:\n");
+            System.out.println("\nEl vocabulario de este Consultor Ortografico"+
+                    " contiene las palabras:\n");
             while (e.hasNext()) {
                 System.out.println(e.next());
             }
@@ -272,45 +310,58 @@ public class ConsultorOrtografico {
             System.out.println("\nEl vocabulario esta vacio...");
         }
     }
-    
+    public static void acercaDe () {
+        System.out.println("\nEste tipo abstracto ha sido desarrollado por:\n"+
+                "\n");
+        System.out.println("    *Victor Manuel De Ponte Olivares        Carnet"+
+                " 05-38087");
+        System.out.println("    *Jose Carlos Zabala                     Carnet"+
+                " 05-39070");
+        System.out.println("\n\nBasado en codigo fuente escrito por el profeso"+
+                "r Diego Mosquera");
+        System.out.println("\nVersion de prueba 0.2");
+    }
     public static void mensajeDeBienvenida () {
         System.out.println("\nBienvenido al programa de prueba del tipo:\n");
         System.out.println("           \"Consultor Ortografico\"");
         System.out.println("                 (ConsultOrt)");
-        System.out.println("\nEste tipo abstracto ha sido desarrollado por:\n\n");
-        System.out.println("    *Victor Manuel De Ponte Olivares        Carnet 05-38087");
-        System.out.println("    *Jose Carlos Zabala                     Carnet 05-39070");
-        System.out.println("\n\nBasado en codigo fuente escrito por el profesor Diego Mosquera");
-        System.out.println("\nVersion de prueba 0.2");
+        acercaDe();
     }
     
     public static void mensajeDeDespedida () {
-        System.out.println("\nGracias por probar el tipo \"Consultor Ortografico\"....");
-        System.out.println("\nEste tipo abstracto ha sido desarrollado por:\n\n");
-        System.out.println("    *Victor Manuel De Ponte Olivares        Carnet 05-38087");
-        System.out.println("    *Jose Carlos Zabala                     Carnet 05-39070");
-        System.out.println("\n\nBasado en codigo fuente escrito por el profesor Diego Mosquera");
-        System.out.println("\nVersion de prueba 0.2");
+        System.out.println("\nGracias por probar el tipo \"Consultor Ortografi"+
+                "co\"....");
+        acercaDe();
         System.out.println("\nHasta Luego!!!....\n\n");
     }
     
     public static void historialDeVersiones () {
         System.out.println("\nHistorial de versiones:\n");
         System.out.println("0.1  -  01/03/2010");
-        System.out.println("        PRIMER AVANCE... estan implementadas nada mas las 4 primeras");
-        System.out.println("        opciones, correspondientes a la variante del tipo implemen-");
-        System.out.println("        tada con arreglos. Maneja eficientemente las excepciones lan-");
+        System.out.println("        PRIMER AVANCE... estan implementadas nada "+
+                "mas las 4 primeras");
+        System.out.println("        opciones, correspondientes a la variante d"+
+                "el tipo implemen-");
+        System.out.println("        tada con arreglos. Maneja eficientemente l"+
+                "as excepciones lan-");
         System.out.println("        zadas por las operaciones.\n");
         System.out.println("0.2  -  11/03/2010");
-        System.out.println("        SEGUNDO AVANCE... implementadas todas las opciones para la va-");
-        System.out.println("        riante implementada con arreglos. Usando la variante con tries,");
-        System.out.println("        estan activas todas las opciones. Tambien se implementaron los");
-        System.out.println("        gestores de las nuevas excepciones utilizadas. Presenta proble-");
-        System.out.println("        mas con JML. Funciona perfecto si es compilado y corrido con los");
+        System.out.println("        SEGUNDO AVANCE... implementadas todas las "+
+                "opciones para la va-");
+        System.out.println("        riante implementada con arreglos. Usando l"+
+                "a variante con tries,");
+        System.out.println("        estan activas todas las opciones. Tambien "+
+                "se implementaron los");
+        System.out.println("        gestores de las nuevas excepciones utiliza"+
+                "das. Presenta proble-");
+        System.out.println("        mas con JML. Funciona perfecto si es compi"+
+                "lado y corrido con los");
         System.out.println("        comandos javac y java respectivamente.\n");
         System.out.println("        SALIDA DE ERROR DE JML:\n");
-        System.out.println("        [...] (Las descripciones informales no son ejecutables)");
-        System.out.println("        File \"ConsultOrtTriesArreglos.java\", line 238, character 38 error:");
+        System.out.println("        [...] (Las descripciones informales no son"+
+                " ejecutables)");
+        System.out.println("        File \"ConsultOrtTriesArreglos.java\", lin"+
+                "e 238, character 38 error:");
         System.out.println("        Syntax error: unexpected token: >");
     }
     
@@ -333,11 +384,16 @@ public class ConsultorOrtografico {
     public static void gestorMalFormada (ConsultOrt c, String p) {
         System.out.println("\nUd ha entrado al manejador de la excepcion:\n\n");
         System.out.println("      \"ExcepcionPalabraNoBienFormada\"");
-        System.out.println("\n\nLa palabra que ud introdujo ("+p+"), no esta bien formada.");
-        System.out.println("para que este bien formada, debe de contener al menos una letra del alfabeto");
-        System.out.println("ingles, utilizando solo las letras minusculas, sin numeros ni signos de\npuntuacion...\n\n");
-        System.out.println("Este mensaje aparecera cada vez que ud ingrese una palabra mal formada...");
-        System.out.println("Ahora que Ud. conoce las reglas para formar una palabra,");
+        System.out.println("\n\nLa palabra que ud introdujo ("+p+"), no esta b"+
+                "ien formada.");
+        System.out.println("para que este bien formada, debe de contener al me"+
+                "nos una letra del alfabeto");
+        System.out.println("ingles, utilizando solo las letras minusculas, sin"+
+                " numeros ni signos de\npuntuacion...\n\n");
+        System.out.println("Este mensaje aparecera cada vez que ud ingrese una"+
+                " palabra mal formada...");
+        System.out.println("Ahora que Ud. conoce las reglas para formar una pa"+
+                "labra,");
         System.out.println("Por favor, Introduzca una palabra bien formada...");
     }
     
@@ -353,31 +409,40 @@ public class ConsultorOrtografico {
     public static void gestorYaRegistrada (ConsultOrt c, String p) {
         System.out.println("\nUd ha entrado al manejador de la excepcion:\n\n");
         System.out.println("       \"ExcepcionPalabraYaRegistrada\"");
-        System.out.println("\n\nUd entrara en este manejador cada vez que ingrese una palabra que ya este registrada...");
-        System.out.println("La palabra que ud introdujo ("+p+"), ya pertenece al vocabulario del Consultor\nOrtografico en uso...");
-        System.out.println("Consulte el vocabulario usando prefijos para ver las palabras que ya estan registradas,\ny luego ingrese una que no este en el vocabulario...");
+        System.out.println("\n\nUd entrara en este manejador cada vez que ingr"+
+                "ese una palabra que ya este registrada...");
+        System.out.println("La palabra que ud introdujo ("+p+"), ya pertenece "+
+                "al vocabulario del Consultor\nOrtografico en uso...");
+        System.out.println("Consulte el vocabulario usando prefijos para ver "+
+                "las palabras que ya estan registradas,\ny luego ingrese una "+
+                "que no este en el vocabulario...");
         String s = "";
         String cont = "";
         do {
-            s = Console.readString("\n\nPor favor, Introduzca un prefijo a consultar (palabra bien formada):\n\n   >>  ");
+            s = Console.readString("\n\nPor favor, Introduzca un prefijo a con"+
+                    "sultar (palabra bien formada):\n\n   >>  ");
             if (!c.bf(s)) {
                 System.out.println("Esta palabra esta mal formada...");
             } else {
                 try {
-                    System.out.println("\nConsultando el vocabulario con el prefijo \""+s+"\"...");
+                    System.out.println("\nConsultando el vocabulario con el pr"+
+                            "efijo \""+s+"\"...");
                     String[] a = c.consultarPorPrefijo(s);
                     System.out.println("Consulta generada!!!");
                     print(a);
                     do {
-                        cont = Console.readString("\nDesea continuar consultando el vocabulario??? (y/n):\n\n    >>   ");
-                    } while (!cont.equalsIgnoreCase("y") && !cont.equalsIgnoreCase("n"));
+                        cont = Console.readString("\nDesea continuar consultan"+
+                                "do el vocabulario??? (y/n):\n\n    >>   ");
+                    } while (!cont.equalsIgnoreCase("y") && 
+                                                   !cont.equalsIgnoreCase("n"));
                 } catch (ExcepcionPalabraNoBienFormada ex) {
                     System.out.println(ex.gerMessage());
                     gestorMalFormada(c, p);
                 }
             }
         } while (!c.bf(s) || cont.equalsIgnoreCase("y"));
-        System.out.println("Ahora que ha consultado el vocabulario, por favor ingrese una palabra que no\neste registrada...");
+        System.out.println("Ahora que ha consultado el vocabulario, por favor "+
+                "ingrese una palabra que no\neste registrada...");
     }
     
     /**
@@ -432,7 +497,8 @@ public class ConsultorOrtografico {
     public static void gestorNoSuchElement () {
         System.out.println("\nUd ha entrado al manejador de la excepcion:\n\n");
         System.out.println("       \"NoSuchElementException\"");
-        System.out.println("Esto nunca deberia ocurrir, contacte al programador...\n");
+        System.out.println("Esto nunca deberia ocurrir, contacte al "+
+                "programador...\n");
     }
     
     // FIN DE LOS GESTORES DE EXCEPCIONES...
@@ -444,11 +510,12 @@ public class ConsultorOrtografico {
         int opc=0;
         ConsultOrt c = new ConsultOrtArreglos();
         boolean creado = false;
-        boolean variante = true; // true si se usa arreglos, false si se usa tries
+        boolean variante = true; // true si se usa arreglos, false si usa tries
         boolean volver = false;
         String l = "";
         do {
-            l = Console.readString("\nDesea ver el historial de versiones?? (s/n)\n\n >> ");
+            l = Console.readString("\nDesea ver el historial de versiones?? "+
+                    "(s/n)\n\n >> ");
         } while (!(l.equalsIgnoreCase("s") || l.equalsIgnoreCase("n")));
         if (l.equalsIgnoreCase("s")) {
             historialDeVersiones();
@@ -456,20 +523,30 @@ public class ConsultorOrtografico {
         do {
             System.out.println("\n\nMENU:\n\n");
             System.out.println("1) Crear un nuevo Consultor Ortografico vacio");
-            System.out.println("2) Agregar palabras al vocabulario del consultor");
-            System.out.println("3) Consultar las palabras del vocabulario por medio de un prefijo");
-            System.out.println("4) Generar el prefijo mas largo valido a partir de una palabra");
-            System.out.println("5) Cargar un vocabulario completo a partir de un archivo, midiendo el tiempo de carga");
-            System.out.println("6) Listar todas las palabras del vocabulario del consultor ortografico");
-            System.out.println("7) Salir del programa de prueba del tipo \"Consultor Ortografico\"");
-            opc = Console.readInt("\nQue desea Hacer??\n\n Introduzca una opcion valida:\n\n>> ");
+            System.out.println("2) Agregar palabras al vocabulario del "+
+                    "consultor");
+            System.out.println("3) Consultar las palabras del vocabulario por "+
+                    "medio de un prefijo");
+            System.out.println("4) Generar el prefijo mas largo valido a "+
+                    "partir de una palabra");
+            System.out.println("5) Cargar un vocabulario completo a partir de "+
+                    "un archivo, midiendo el tiempo de carga");
+            System.out.println("6) Listar todas las palabras del vocabulario "+
+                    "del consultor ortografico");
+            System.out.println("7) Salir del programa de prueba del tipo "+
+                    "\"Consultor Ortografico\"");
+            opc = Console.readInt("\nQue desea Hacer??\n\n Introduzca una "+
+                    "opcion valida:\n\n>> ");
             if (opc == 1) {
                 do {
                     System.out.println("\n\nCual variante desea usar???\n");
-                    System.out.println("1) La variante  implementada con ARREGLOS");
-                    System.out.println("2) La variante implementada con TRIES");
+                    System.out.println("1) La variante  implementada con "+
+                            "ARREGLOS");
+                    System.out.println("2) La variante implementada con "+
+                            "TRIES");
                     System.out.println("3) Volver al menu anterior...");
-                    int v = Console.readInt("\n\n Introduzca una opcion valida:\n\n>> ");
+                    int v = Console.readInt("\n\n Introduzca una opcion valida"+
+                            ":\n\n>> ");
                     if (v == 1) {
                         c = new ConsultOrtArreglos();
                         creado = true;
@@ -484,25 +561,31 @@ public class ConsultorOrtografico {
                     }
                 } while (!creado && !volver);
                 if (creado) {
-                    System.out.println("\nConsultor Ortografico vacio creado con exito...");
+                    System.out.println("\nConsultor Ortografico vacio creado "+
+                            "con exito...");
                 } else {
-                    System.out.println("\nEl Consultor Ortografico vacio no fue creado con exito...");
+                    System.out.println("\nEl Consultor Ortografico vacio no "+
+                            "fue creado con exito...");
                 }
             } else if (opc == 2) {
                 if (creado) {
                     int n;
                     do {
-                        n = Console.readInt("\nCuantas palabras quiere agregar?\n\n    >>   ");
+                        n = Console.readInt("\nCuantas palabras quiere agregar"+
+                                "?\n\n    >>   ");
                     } while (!(0 < n));
                     String[] palabras = new String[n];
                     for (int k =0; k < palabras.length; k++) {
-                        palabras[k] = Console.readString("\nIntroduzca la "+(k+1)+"a palabra a agregar:\n\n         >>   ");
+                        palabras[k] = Console.readString("\nIntroduzca la "+
+                                (k+1)+"a palabra a agregar:\n\n         >>   ");
                     }
                     for (int k = 0; k < palabras.length; k++){
-                        System.out.println("\nAgregando la palabra \"" + palabras[k] + "\"...");
+                        System.out.println("\nAgregando la palabra \"" +
+                                palabras[k] + "\"...");
                         try {
                             c.agregar(palabras[k]);
-                            System.out.println("\nPalabra \"" + palabras[k] + "\" agregada con exito!!!");
+                            System.out.println("\nPalabra \"" + palabras[k] +
+                                    "\" agregada con exito!!!");
                         } catch (ExcepcionPalabraNoBienFormada ex) {
                             System.out.println(ex.gerMessage());
                             gestorMalFormada(c,palabras[k]);
@@ -512,16 +595,22 @@ public class ConsultorOrtografico {
                         }
                     }
                 } else {
-                    System.out.println("\nNo se ha creado un nuevo Consultor Ortografico, no es posible realizar la operacion...");
+                    System.out.println("\nNo se ha creado un nuevo Consultor "+
+                            "Ortografico, no es posible realizar la operacion"+
+                            "...");
                 }
             } else if (opc == 3) {
                 if (creado) {
                     do {
-                        l = Console.readString("\nIntroduzca el prefijo a consultar:\n\n    >>   ");
+                        l = Console.readString("\nIntroduzca el prefijo a "+
+                                "consultar:\n\n    >>   ");
                         try {
-                            System.out.println("\nConsultando el vocabulario con el prefijo \""+l+"\"...");
+                            System.out.println("\nConsultando el vocabulario "+
+                                    "con el prefijo \""+l+"\"...");
                             String[] a = c.consultarPorPrefijo(l);
-                            System.out.println("\nArreglo de palabras en el vocabulario para el prefijo \"" + l + "\"\ncreado con exito!!!");
+                            System.out.println("\nArreglo de palabras en el "+
+                                    "vocabulario para el prefijo \"" + l + "\""+
+                                    "\ncreado con exito!!!");
                             print(a);
                         } catch (ExcepcionPalabraNoBienFormada ex) {
                             System.out.println(ex.gerMessage());
@@ -529,37 +618,52 @@ public class ConsultorOrtografico {
                         }
                     } while (!c.bf(l));
                 } else {
-                    System.out.println("\nNo se ha creado un nuevo Consultor Ortografico, no es posible realizar la operacion...");
+                    System.out.println("\nNo se ha creado un nuevo Consultor "+
+                            "Ortografico, no es posible realizar la operacion"+
+                            "...");
                 }
             } else if (opc == 4) {
                 if (creado) {
                     do {
-                        l = Console.readString("\nIntroduzca la palabra a partir de la cual se generara el prefijo:\n\n    >>   ");
+                        l = Console.readString("\nIntroduzca la palabra a "+
+                                "partir de la cual se generara el prefijo:"+
+                                "\n\n    >>   ");
                         try {
-                            System.out.println("\nGenerando el prefijo mas largo posible a partir de  \"" + l + "\"...");
+                            System.out.println("\nGenerando el prefijo mas "+
+                                    "largo posible a partir de  \"" + l + "\""+
+                                    "...");
                             String s = c.prefijoMasLargo(l);
-                            System.out.println("\nPrefijo mas largo a partir de la palabra \"" + l + "\" generado con exito!!!");
-                            System.out.println("\nEl prefijo generado es:\n\n\n       >>          \""+s+"\"");
+                            System.out.println("\nPrefijo mas largo a partir "+
+                                    "de la palabra \"" + l + "\" generado con "+
+                                    "exito!!!");
+                            System.out.println("\nEl prefijo generado es:\n\n"+
+                                    "\n       >>          \""+s+"\"");
                         } catch (ExcepcionPalabraNoBienFormada ex) {
                             System.out.println(ex.gerMessage());
                             gestorMalFormada(c,l);
                         }
                     } while (!c.bf(l));
                 } else {
-                    System.out.println("\nNo se ha creado un nuevo Consultor Ortografico, no es posible realizar la operacion...");
+                    System.out.println("\nNo se ha creado un nuevo Consultor "+
+                            "Ortografico, no es posible realizar la operacion"+
+                            "...");
                 }
             } else if (opc == 5) {
                 if (creado) {
                     cargarArchivo(c, variante);
                     System.out.println("\nFin del proceso de carga...\n");
                 } else {
-                    System.out.println("\nNo se ha creado un nuevo Consultor Ortografico, no es posible realizar la operacion...");
+                    System.out.println("\nNo se ha creado un nuevo Consultor "+
+                            "Ortografico, no es posible realizar la operacion"+
+                            "...");
                 }
             } else if (opc == 6) {
                 if (creado) {
                     listarVoc(c);
                 } else {
-                    System.out.println("\nNo se ha creado un nuevo Consultor Ortografico, no es posible realizar la operacion...");
+                    System.out.println("\nNo se ha creado un nuevo Consultor "+
+                            "Ortografico, no es posible realizar la operacion"+
+                            "...");
                 }
             } else if (opc == 7) {
                 mensajeDeDespedida();
